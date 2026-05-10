@@ -17,7 +17,7 @@ module tt_um_sky_pll (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  	assign uio_out = uio_in & {7/bp, ena};
+  	assign uio_out = uio_in & {7'b0, ena};
   	assign uio_oe  = 0;
 
 	reg [3:0]r_reg_div;
