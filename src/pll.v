@@ -50,7 +50,7 @@ module tt_um_sky_pll (
 		
 	end
 
-	assign uio_out = {2'b0,r_outdiv, reset_output_n, clk_result};
+	assign uo_out = {2'b0,r_outdiv, reset_output_n, clk_result};
 
 	pll pll(.reset_n(rst_n), .reset_output_n(reset_output_n), .refclk(refclk), .count(ui_in[3:0]), .clk(clk_result));
 
