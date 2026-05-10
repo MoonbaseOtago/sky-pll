@@ -17,7 +17,7 @@ module tt_um_sky_pll (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  	assign uio_out = 8'b0&uio_in;
+  	assign uio_out = uio_in & {7/bp, ena};
   	assign uio_oe  = 0;
 
 	reg [3:0]r_reg_div;
@@ -58,4 +58,6 @@ endmodule
 
 
 module pll(input reset_n, output reset_output_n, input refclk, input [3:0]count, output clk);
+	assign clk=refclk;
+	assign reset_output_n = reset_n| (|count);
 endmodule
