@@ -31,6 +31,16 @@
   "//": "https://tinytapeout.com/faq/#how-can-i-map-an-additional-external-clock-to-one-of-the-gpios",
   "CLOCK_PORT": "clk",
 
+  "EXTRA_LEFS": "src/pll.lef",
+  "// EXTRA_LIBS": "src/pll.lib",
+  "EXTRA_GDS_FILES": "src/pll.gds",
+  "SYNTH_READ_BLACKBOX_LIB": "1",
+  "VERILOG_FILES_BLACKBOX" : "src/pll.bb.v",
+  "MACRO_PLACEMENT_CFG" : "src/macro_placement.cfg",
+  "//  FP_PDN_MACRO_HOOKS": "pll VPWR VGND",
+  "SYNTH_POWER_DEFINE": "USE_POWER_PINS",
+  "// FP_PDN_CHECK_NODES": false,
+
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
   "//": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",

@@ -52,12 +52,16 @@ module tt_um_sky_pll (
 
 	assign uo_out = {2'b0,r_outdiv, reset_output_n, clk_result};
 
-	pll pll(.reset_n(rst_n), .reset_output_n(reset_output_n), .refclk(refclk), .count(ui_in[3:0]), .clk(clk_result));
+	pll pll(.RESET_N(rst_n),
+`ifdef USER_POWER_PINS
+            	.VPWR(VPWR), .VGND(VGND),
+`endif
+		.RESET_OUT_N(reset_output_n),
+		.REFCLK(refclk),
+		.COUNT_3(ui_in[3]),
+		.COUNT_2(ui_in[2]),
+		.COUNT_1(ui_in[1]),
+		.COUNT_0(ui_in[0]),
+		.CLK(clk_result));
 
-endmodule
-
-
-module pll(input reset_n, output reset_output_n, input refclk, input [3:0]count, output clk);
-	assign clk=refclk;
-	assign reset_output_n = reset_n| (|count);
 endmodule
