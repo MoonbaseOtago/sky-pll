@@ -7,9 +7,16 @@
 
 
 module pll(input RESET_N,
-`ifdef USER_POWER_PINS
+`ifdef GL_TEST
             inout VPWR, inout VGND,
 `endif
 
-	output RESET_OUT_N, input REFCLK, input COUNT_3, input COUNT_2, input COUNT_1, input COUNT_0, output CLK);
+	output RESET_OUT_N, input REFCLK, input COUNT_3, input COUNT_2, input COUNT_1, input COUNT_0, output CLK
+
+	// don't use the following pins, they are for spice testing
+`ifdef NOTDEF
+	,output VCTRL, output UP, output UP_N, output DOWN, output DOWN_N, output BD, output BU
+`endif
+
+);
 endmodule

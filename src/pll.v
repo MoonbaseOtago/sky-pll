@@ -53,7 +53,7 @@ module tt_um_sky_pll (
 	assign uo_out = {2'b0,r_outdiv, reset_output_n, clk_result};
 
 	pll pll(.RESET_N(rst_n),
-`ifdef USER_POWER_PINS
+`ifdef GL_TEST
             	.VPWR(VPWR), .VGND(VGND),
 `endif
 		.RESET_OUT_N(reset_output_n),
