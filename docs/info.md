@@ -7,7 +7,7 @@ The PLL looks like this
 On the left hand side are Sky HS logic blocks, they include a programmable clock scaler (a 4 bit down counter set
 by the COUNT\_* pins), a reset logic that looks for clock stability and after detecting 16 good clocks asserts RESET\_OUT\_N, and a phase detector that compares the output of the clock scaler with a reference clock and drives the charge pump.
 
-On the right are the analog blocks sitting in a deep n-well. Along the bottom is a variable frequency oscillator (VCO),
+On the right are the analog blocks. Along the bottom is a variable frequency oscillator (VCO),
 5 stages, Top left is the charge pump that drives the VCTRL output voltage into the oscillator. The 4 large square boxes to the right are capacitors charged from VCTRL through a long poly resistor that snakes the width of the block. The 2 small square boxes to the right are a smaller capacitor also on VCTRL.. The other 2 caps are decoupling caps for the charge pump.
 
 ## Interface

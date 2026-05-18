@@ -84,6 +84,7 @@
     "IGNORE_DISCONNECTED_MODULES": "pll",
     "DESIGN_NAME":"tt_um_sky_pll",
 
+  "FP_PDN_VPITCH": 26,
 
 
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
@@ -113,7 +114,6 @@
   "FP_IO_HLENGTH": 2,
   "FP_IO_VLENGTH": 2,
 
-  "FP_PDN_VPITCH": 38.87,
 
   "//": "Clock",
   "RUN_CTS": 1,
