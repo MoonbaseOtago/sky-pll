@@ -44,7 +44,7 @@
     "pll": {
       "instances": {
         "pll": {
-          "location": [0, 3],
+          "location": [0.1, 0.1],
           "orientation": "N"
         }
       },
@@ -62,30 +62,22 @@
     }
   },
 
+   "//": "  Full custom PDN config",
+   "PDN_MACRO_CONNECTIONS": ["pll VPWR VGND VPWR VGND"],
+   "FP_PDN_VPITCH": 26.695,
+   "FP_PDN_HORIZONTAL_LAYER": "met3",
+   "FP_MACRO_HORIZONTAL_HALO": "1",
+   "FP_MACRO_VERTICAL_HALO": "1",
+   "PDN_HORIZONTAL_HALO": "1",
+   "PDN_VERTICAL_HALO": "1",
+   "ERROR_ON_PDN_VIOLATIONS": 0,
+   "IGNORE_DISCONNECTED_MODULES": "pll",
+   "RUN_IRDROP_REPORT": 0,
 
-  "FP_PDN_MACRO_HOOKS": "pll VPWR VGND VPWR VGND",
+
+
   "SYNTH_POWER_DEFINE": "USE_POWER_PINS",
   "SYNTH_USE_PG_PINS_DEFINES": "USE_POWER_PINS",
-  "//  FP_PDN_CHECK_NODES": false,
-  "MACRO_PLACE_HALO": 0,
-  "PL_PLACE_HALO": "0, 12 ",
-  "FP_TAP_HORIZONTAL_HALO": 0,
-  "FP_TAP_VERTICAL_HALO": 12,
-  "FP_PDN_ENABLE_MACROS_GRID": 1,
-  "PL_MACRO_HALO": "0 12", 
-    "MAGTYPE": "maglef",
-    "MAGIC_NO_EXT_UNIQUE": 1,
-
-    "//": "  Full custom PDN config",
-    "FP_PDN_CFG": "dir::pdn_cfg.tcl",
-    "PDN_ENABLE_RAILS": 1,
-    "PDN_CONNECT_MACROS_TO_GRID": 1,
-    "PDN_MACRO_CONNECTIONS": "pll VPWR VGND VPWR VGND",
-    "IGNORE_DISCONNECTED_MODULES": "pll",
-    "DESIGN_NAME":"tt_um_sky_pll",
-
-  "FP_PDN_VPITCH": 26.695,
-
 
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
