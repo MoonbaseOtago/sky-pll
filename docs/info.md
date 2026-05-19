@@ -22,8 +22,46 @@ input. If you want more flexibility in generated frequencies you can divide down
 Outputs are:
 * CLK - the resulting clock - at reset this in undefined, some time after RESET\_N is removed it will be active
 at the desired frequency (COUNT\+1)\*f(REFCLK) (it's your responsibility to choose frequencies that the PLL can
-actually generate - roughly 50-300MHz, outside that range the results are undefined)
+actually generate - roughly 50-300MHz, outside that range the results are undefined). Note in the rush to tape out the VCO range may have shifted up, 50MHa may not lock well - we'll see, that's what test tapeouts are for.
 * RESET\_OUT\_N - this is a synchronous signal (wrt CLK) that is asserted by RESET\_N until the clock is fairly stable - it's intended use is to hold a design in reset until the clock is stable, through the period when it might be thrashing around as the VCO starts up - your design should ignore the Tiny Tapeout rst\_n and use this signal - note this signal is generated internally, your design might have a deep clock tree, it may be useful to run this through a flop before you use it to meet setup/hold. This signal is asserted by RESET\_N and cleared when the clock becomes stable enough to use, it is not asserted again until RESET\_N is asserted. This signal is cleared BEFORE the clock is completely stable (we'll characterize this with spice later), clock freq may go slightly higher that desired (a few percent) as it settles.
+
+With the reference clock set to 25MHz these frequencies shoukld be possible, anything after ~300MHz may not be real (out of the range of the VCO)
+| COUNT    |  multiplier  | CLK Freq |
+| -------- |  -------     | --------
+| 0001     | 2            | 50MHz    |
+| 0010     | 3            | 75MHz    |
+| 0011     | 4            | 100MHz   |
+| 0100     | 5            | 125MHz   |
+| 0101     | 6            | 150MHz   |
+| 0110     | 7            | 175MHz   |
+| 0111     | 8            | 200MHz   |
+| 1000     | 9            | 225MHz   |
+| 1001     | 10           | 250MHz   |
+| 1010     | 11           | 275MHz   |
+| 1011     | 12           | 300MHz   |
+| 1100     | 13           | 325MHz*  |
+| 1101     | 14           | 350MHz*  |
+| 1110     | 15           | 375MHz*  |
+
+
+With a divides by 2 reference clock set to 12.5MHz these frequencies shoukld be possible, number under 50MHz may be out of the range of the VCO)
+| COUNT    |  multiplier  | CLK Freq |
+| -------- |  -------     | --------
+| 0001     | 2            | 25MHz*    |
+| 0010     | 3            | 37.5MHz*    |
+| 0011     | 4            | 50MHz   |
+| 0100     | 5            | 62.5MHz   |
+| 0101     | 6            | 75MHz   |
+| 0110     | 7            | 87.5MHz   |
+| 0111     | 8            | 100MHz   |
+| 1000     | 9            | 112.5MHz   |
+| 1001     | 10           | 125MHz   |
+| 1010     | 11           | 137.5MHz   |
+| 1011     | 12           | 150MHz   |
+| 1100     | 13           | 162.5MHz  |
+| 1101     | 14           | 175MHz  |
+| 1110     | 15           | 187.5MHz  |
+| 1111     | 15           | 200MHz  |
 
 # This project
 
@@ -33,7 +71,7 @@ The output CLK is connected to uo\_out\[0\] a 4 bit counter driven from CLK is c
 
 ## How to test
 
-Drive ui\_in with 8'n0000\_0001 (2 times freq), Set the TT clock to 25MHz. Assert reset, uo\_out\[1\] should go low, clear reset, uo\_out\[1\] should high. If we get this far the PLL is making a good clock. You can now look at the uo\_out pins on a scope to check the freq.
+Drive ui\_in with 8'n0000\_0001 (2 times freq), Set the TT clock to 25MHz. Assert reset, uo\_out\[1\] should go low, clear reset, uo\_out\[1\] should high. If we get this far the PLL is making a good clock. You can now look at the uo\_out pins on a scope to check the freqs (should be 50MHz though that's at the tough lower end of the final VCO, 8'n0000\_0010 will give you 75MHz, try looking at uo\_out\[3:2\]which shoukld be 1/2 and 1/4 the internal clock freq)
 
 
 
