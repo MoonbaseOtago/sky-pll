@@ -1,0 +1,27 @@
+
+.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+#.include "CP_extracted.cir"
+.include "bias.spice"
+
+* Instantiate the extracted subcircuit
+XA VBIAS_U VBIAS_D net29 net41  net7 net11  VPWR VGND  BIAS
+
+
+
+
+* Simulation sources
+V0 VGND GND 0
+V1 VPWR GND 1.8
+#V2 UP_N GND PULSE(0 1.8 1ns 100ps 100ps 17ns 20ns)
+#V3 DOWN GND PULSE(0 1.8 1ns 100ps 100ps 5ns 31ns)
+
+#.TEMP 75
+
+#.temp 55
+* Simulation commands
+.tran 0.02n 100n
+.control
+run
+.endc
+
+.end

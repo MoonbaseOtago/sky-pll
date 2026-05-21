@@ -1,0 +1,29 @@
+
+.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+#.include "line2.spice"
+#.include "line_extracted.cir"
+#.include "dl4.spice"
+.include "line4_extracted.cir"
+
+* Instantiate the extracted subcircuit
+XA   VO_N_4 VO_N_0 VO_N_1 VO_N_2 VO_N_3 Y VCTRL VPWR VGND line4
+
+
+
+* Simulation sources
+V0 VGND GND 0
+V1 VPWR GND 1.8
+#V2 IN GND PULSE(0 1.8 1ns 100ps 100ps 10ns 20ns)
+#V3 VCTRL GND 0.65
+V3 VCTRL GND PULSE(0 1.8 0ns 5000n 100ps 50000ns 50000ns)
+#V4 BN GND PULSE(0 1.8 0ns 5000n 100ps 50000ns 50000ns)
+#V5 BP GND PULSE(1.8 0 0ns 5000n 100ps 50000ns 50000ns)
+
+* Simulation commands
+.tran 0.02n 5000n
+.control
+run
+#eprvcd -a  VCTRL Y  VO_N_0 VO_N_1 VO_N_2 VO_N_3 VO_N_4 BP BN XA XB XA.XD0.VTAIL  >b.vcd
+eprvcd -a  VCTRL Y  VO_N_0 VO_N_1 VO_N_2 VO_N_3 VO_N_4 >b.vcd
+.endc
+.end

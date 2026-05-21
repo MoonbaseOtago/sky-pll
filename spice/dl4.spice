@@ -1,0 +1,69 @@
+
+#
+.SUBCKT dly4  VI_P VI_N BP BN VO_P VO_N VGND VPWR
+
+XMP0 VO_N    VO_N   VPWR   VPWR sky130_fd_pr__pfet_01v8 l=0.15u w=1.1u
+XMP1 VPWR   BP      VO_N   VPWR sky130_fd_pr__pfet_01v8 l=0.15u w=1.1u
+XMP2 VO_P   BP      VPWR   VPWR sky130_fd_pr__pfet_01v8 l=0.15u w=1.1u
+XMP3 VPWR   VO_P    VO_P   VPWR sky130_fd_pr__pfet_01v8 l=0.15u w=1.1u
+
+# caps to tune freq range
+XMP3a VPWR   VO_P    VPWR  VPWR sky130_fd_pr__pfet_01v8 l=1.5u w=1.065u
+XMP3b VPWR   VO_N    VPWR  VPWR sky130_fd_pr__pfet_01v8 l=1.5u w=1.065u
+XMN3a VGND   VO_P    VGND  VGND sky130_fd_pr__nfet_01v8_lvt l=1.5u w=1.15u
+XMN3b VGND   VO_N    VGND  VGND sky130_fd_pr__nfet_01v8_lvt l=1.5u w=1.15u
+
+XMN3 VO_N   VO_P     VGND  VGND sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.42u
+XMN4 VO_P   VO_N     VGND  VGND sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.42u
+
+
+XMN0 VTAIL  VI_P     VO_N  VGND sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.985u
+XMN1 VO_P   VI_N     VTAIL VGND sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.985u
+XMN2 VTAIL  BN       VGND  VGND sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.42u
+
+# this slightly extends the freq range
+XMN9 VGND   VTAIL    VGND  VGND  sky130_fd_pr__nfet_01v8_lvt l=1.5u w=1.15u
+
+.ENDS dly
+
+
+.SUBCKT dly_bias4 VCTRL BP BN VGND sky130_gnd VPWR VPB 
+
+XMP0 BP   VCTRL VPWR    VPB        sky130_fd_pr__pfet_01v8 l=0.15u w=4u
+XMN0 BP   BP    VGND    sky130_gnd sky130_fd_pr__nfet_01v8 l=0.15u w=2u
+
+
+XMP2 BN   BN    VPWR    VPB        sky130_fd_pr__pfet_01v8 l=0.15u w=4u
+XMN1 BN   BP    VGND    sky130_gnd sky130_fd_pr__nfet_01v8_lvt l=0.15u w=0.42u
+
+.ENDS dly_bias
+
+.SUBCKT dly_out4 N P Y VGND sky130_gnd VPWR  VPB
+
+XMP0 XA   P    VPWR VPB sky130_fd_pr__pfet_01v8 l=0.15u w=2u
+XMP1 XB   N    VPWR VPB sky130_fd_pr__pfet_01v8 l=0.15u w=2u
+
+XMN0 XA   XA   VGND sky130_gnd sky130_fd_pr__nfet_01v8 l=0.15u w=0.42u
+XMN1 XB   XA   VGND sky130_gnd sky130_fd_pr__nfet_01v8 l=0.15u w=0.42u
+
+
+XMP2 Y    XB   VPWR VPB sky130_fd_pr__pfet_01v8 l=0.15u w=0.7u
+XMN2 Y    XB   VGND sky130_gnd sky130_fd_pr__nfet_01v8 l=0.15u w=0.42u
+
+.ENDS dly_out
+
+
+.SUBCKT line4 VCTRL VO_N_0 VO_N_1 VO_N_2 VO_N_3 VO_N_4 Y  VGND VPWR  BP BN 
+
+XA VCTRL BP BN VGND VGND VPWR VPWR dly_bias4
+
+XD0 VO_N_4 VO_P_4 BP BN VO_P_0 VO_N_0 VGND VPWR dly4
+XD1 VO_N_0 VO_P_0 BP BN VO_P_1 VO_N_1 VGND VPWR dly4
+XD2 VO_N_1 VO_P_1 BP BN VO_P_2 VO_N_2 VGND VPWR dly4
+XD3 VO_N_2 VO_P_2 BP BN VO_P_3 VO_N_3 VGND VPWR dly4
+XD4 VO_N_3 VO_P_3 BP BN VO_P_4 VO_N_4 VGND VPWR dly4
+
+XO  VO_N_4 VO_P_4 Y VGND VGND VPWR VPWR dly_out4
+
+.ENDs line
+

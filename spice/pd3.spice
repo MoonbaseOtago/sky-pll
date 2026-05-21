@@ -1,0 +1,119 @@
+
+#.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+#.lib /usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hs/spice/sky130_fd_sc_hs.spice
+
+.include counter.spice
+
+.SUBCKT pd3 LOCALCLK REFCLK UP UP_N VPWR DOWN DOWN_N VGND CLKIN CLK RESET_N RESET RESET_OUT_N  COUNT_3 COUNT_2 COUNT_1 COUNT_0
+
+
+# distribute reset
+
+# 	sky130_fd_sc_hs__inv_1 x30(.A(RESET_N), .Y(RESET));
+x30  RESET_N VGND VGND VPWR VPWR RESET sky130_fd_sc_hs__inv_1 
+#        sky130_fd_sc_hs__inv_2 x301(.A(RESET), .Y(R_N));
+x30a RESET VGND VGND VPWR VPWR R_N sky130_fd_sc_hs__inv_1 
+X99 R_N             VGND VGND VPWR VPWR XRESET    sky130_fd_sc_hs__inv_1
+
+
+# down counter
+
+
+xcount XRESET LCLK COUNT_2 COUNT_1 VPWR COUNT_3 COUNT_0 LOCALCLK VGND counter
+
+
+# PD
+
+
+X1 UP     REFCLK   VGND VGND VPWR VPWR UP_NN   sky130_fd_sc_hs__nor2_1
+X2 E      UP_NN    VGND VGND VPWR VPWR UP      sky130_fd_sc_hs__nor2_1
+X11 UP             VGND VGND VPWR VPWR UP_N    sky130_fd_sc_hs__inv_1
+
+X3 DOWN   LOCALCLK VGND VGND VPWR VPWR DOWN_NN sky130_fd_sc_hs__nor2_1
+X4 F      DOWN_NN  VGND VGND VPWR VPWR DOWN    sky130_fd_sc_hs__nor2_1
+X12 DOWN           VGND VGND VPWR VPWR DOWN_N  sky130_fd_sc_hs__inv_1
+
+X5 E_N    UP_NN    VGND VGND VPWR VPWR E      sky130_fd_sc_hs__nor2_1
+X6 RST    E        VGND VGND VPWR VPWR E_N    sky130_fd_sc_hs__nor2_1
+
+X7 F_N     DOWN_NN  VGND VGND VPWR VPWR F      sky130_fd_sc_hs__nor2_1
+X8 RST     F        VGND VGND VPWR VPWR F_N    sky130_fd_sc_hs__nor2_1
+
+X9  VPWR VPWR VGND RST_N DOWN UP VGND sky130_fd_sc_hs__nand2_1
+X10 RST_N          VGND VGND VPWR VPWR RA sky130_fd_sc_hs__inv_1
+X21 RA             VGND VGND VPWR VPWR RB sky130_fd_sc_hs__inv_1
+X22 RB             VGND VGND VPWR VPWR RST sky130_fd_sc_hs__inv_1
+
+# global/local clock amps
+
+XBUF4 CLKIN VGND VGND VPWR VPWR CLK sky130_fd_sc_hs__clkbuf_4
+XBUF2 VPWR VPWR VGND LCLK CLKIN VGND sky130_fd_sc_hs__clkbuf_2
+
+# lock detector
+
+
+#        sky130_fd_sc_hs__dfsbp_1 x31(.D(UP),   .SET_B(R_N), .CLK(REFCLK),   .Q(U_UP) );
+x31  REFCLK UP R_N VGND VGND VPWR VPWR U_UP P1 sky130_fd_sc_hs__dfsbp_1
+#        sky130_fd_sc_hs__dfsbp_1 x32(.D(DOWN), .SET_B(R_N), .CLK(LOCALCLK), .Q(U_DN) );
+x32  LOCALCLK DOWN R_N VGND VGND VPWR VPWR U_DN P2 sky130_fd_sc_hs__dfsbp_1
+
+#        sky130_fd_sc_hs__nor2_1  x33a(.A(U_UP), .B(U_DN), .Y(U3));
+x33a U_UP U_DN VGND VGND VPWR VPWR U3 sky130_fd_sc_hs__nor2_1
+
+#        sky130_fd_sc_hs__and2_1  x33(.A(U3), .B(R_N), .X(U5));
+x33  VPWR VPWR U5 U3 R_N VGND VGND sky130_fd_sc_hs__and2_1
+
+
+#        sky130_fd_sc_hs__dfrbp_1 x34(.D(1), .RESET_B(U5),.CLK(CLK), .Q(U4));
+x34  LCLK VPWR  U5 VGND VGND VPWR VPWR U4 P3 sky130_fd_sc_hs__dfrbp_1
+#        sky130_fd_sc_hs__dfrbp_1 x34a(.D(U4),  .RESET_B(U5),.CLK(CLK), .Q(LOCK_PENDING));
+x34a  LCLK U4  U5 VGND VGND VPWR VPWR LOCK_PENDING P4 sky130_fd_sc_hs__dfrbp_1
+
+
+
+#        sky130_fd_sc_hs__xor2_1 x35(.A(LOCK_PENDING), .B(O[0]), .X(I[0]));
+x35  LOCK_PENDING O_0 VGND VGND VPWR VPWR I_0 sky130_fd_sc_hs__xor2_1
+#        sky130_fd_sc_hs__dfrbp_1 x36(.D(I[0]), .RESET_B(R_N), .CLK(CLK), .Q(O[0]));
+x36  LCLK I_0  R_N VGND VGND VPWR VPWR O_0 P5 sky130_fd_sc_hs__dfrbp_1
+
+#        sky130_fd_sc_hs__xor2_1  x37(.A(O[0]), .B(O[1]), .X(AX));
+x37  O_0 O_1 VGND VGND VPWR VPWR AX sky130_fd_sc_hs__xor2_1
+#        sky130_fd_sc_hs__and2_1  x38(.A(LOCK_PENDING), .B(AX), .X(I[1]));
+x38  VPWR VPWR I_1 LOCK_PENDING AX VGND VGND sky130_fd_sc_hs__and2_1
+#        sky130_fd_sc_hs__dfrbp_1 x39(.D(I[1]), .RESET_B(R_N), .CLK(CLK), .Q(O[1]));
+x39  LCLK I_1  R_N VGND VGND VPWR VPWR O_1 P6 sky130_fd_sc_hs__dfrbp_1
+
+#        sky130_fd_sc_hs__and2_1 x40(.A(O[0]), .B(O[1]), .X(ZZ));
+x40  VPWR VPWR ZZ O_0 O_1 VGND VGND sky130_fd_sc_hs__and2_1
+#        sky130_fd_sc_hs__xor2_1  x41(.A(ZZ), .B(O[2]), .X(BX));
+x41  ZZ O_2 VGND VGND VPWR VPWR BX sky130_fd_sc_hs__xor2_1
+#        sky130_fd_sc_hs__and2_1  x42(.A(LOCK_PENDING), .B(BX), .X(I[2]));
+x42  VPWR VPWR I_2 LOCK_PENDING BX VGND VGND sky130_fd_sc_hs__and2_1
+#        sky130_fd_sc_hs__dfrbp_1 x43(.D(I[2]), .RESET_B(R_N), .CLK(CLK), .Q(O[2]));
+x43  LCLK I_2  R_N VGND VGND VPWR VPWR O_2 P7 sky130_fd_sc_hs__dfrbp_1
+
+
+
+#        sky130_fd_sc_hs__and3_1 x40a(.A(O[0]), .B(O[1]), .C(O[2]), .X(YY));
+x40a  O_1 O_0 O_2 VGND VGND VPWR VPWR YY sky130_fd_sc_hs__and3_1
+#        sky130_fd_sc_hs__xor2_1  x41a(.A(YY), .B(O[3]), .X(EX));
+x41a  YY O_3 VGND VGND VPWR VPWR EX sky130_fd_sc_hs__xor2_1
+#        sky130_fd_sc_hs__and2_1  x42a(.A(LOCK_PENDING), .B(EX), .X(I[3]));
+x42a VPWR VPWR I_3 LOCK_PENDING EX VGND VGND sky130_fd_sc_hs__and2_1
+#        sky130_fd_sc_hs__dfrbp_1 x43a(.D(I[3]), .RESET_B(R_N), .CLK(CLK), .Q(O[3]));
+x43a  LCLK I_3  R_N VGND VGND VPWR VPWR O_3 P8 sky130_fd_sc_hs__dfrbp_1
+
+
+#        sky130_fd_sc_hs__nand4_1 x44(.A(O[0]), .B(O[1]), .C(O[2]), .D(O[3]), .Y(DX));   // 0 when at end of count
+x44  O_0 O_1 O_2 O_3 VGND VGND VPWR VPWR DX sky130_fd_sc_hs__nand4_1
+#        sky130_fd_sc_hs__nand2b_1 x45(.B(LOCK_PENDING), .A_N(DX), .Y(CX));      // 0 when at end of count and lock still pending
+x45    DX LOCK_PENDING VGND VGND VPWR VPWR CX sky130_fd_sc_hs__nand2b_1
+#        sky130_fd_sc_hs__or2b_1  x46(.A(RESET_OUT_N), .B_N(CX), .X(RO));          // 1 when at end of count and lock still pending or already locked
+x46    RESET_OUT_N CX VGND VGND VPWR VPWR RO sky130_fd_sc_hs__or2b_1
+ 
+#        sky130_fd_sc_hs__dfrbp_4 x47(.D(RO), .RESET_B(R_N),.CLK(CLK), .Q(RESET_OUT_N));
+x47  LCLK RO  R_N VGND VGND VPWR VPWR RESET_OUT_N P9 sky130_fd_sc_hs__dfrbp_2
+
+
+.ENDS pd
+

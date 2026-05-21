@@ -1,0 +1,104 @@
+81:4 (areaid81:4 (areaid
+#.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+
+
+.subckt cp2 RESET UP UP_N DOWN DOWN_N VCTRL BU BD VPWR VGND 
+
+# bias circuit
+xm3 BD      VBIAS_U net11 VPWR sky130_fd_pr__pfet_01v8 w=0.7u l=0.15u
+xm2 VBIAS_U VBIAS_U net7  VPWR sky130_fd_pr__pfet_01v8 w=0.7u l=0.15u
+
+xm1 net7    VBIAS_U VPWR  VPWR sky130_fd_pr__pfet_01v8 w=3.6u l=0.15u
+xm0 net11   VBIAS_U VPWR  VPWR sky130_fd_pr__pfet_01v8 w=0.42u l=0.15u
+
+xm6 VBIAS_U BD      net41 VGND sky130_fd_pr__nfet_01v8 w=0.90u l=0.15u
+xm4 BD      BD      VGND  VGND sky130_fd_pr__nfet_01v8 w=0.90u l=0.15u
+
+XR0  VGND   net41 	sky130_fd_pr__res_generic_po R=522.896969697 L=3.58u W=0.33u
+
+#startup
+xm8 net29    BD     VGND  VGND sky130_fd_pr__nfet_01v8 w=0.46u l=0.15u
+xm7 VBIAS_U  net29  BD    VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xm9 VPWR     net29  VPWR  VPWR sky130_fd_pr__pfet_01v8 w=1.2u l=0.8u
+
+
+#CAP
+
+xmpd VPWR BD VPWR   VPWR sky130_fd_pr__pfet_01v8 w=1.355u l=2u
+xmnd VGND BD VGND   VGND sky130_fd_pr__nfet_01v8 w=1.31u l=2u
+
+
+#V111 BD GND 0.51
+# CP bias
+
+xmpa BB VGND VPWR VPWR sky130_fd_pr__pfet_01v8 w=0.7u l=0.15u 
+xmp0 BU BU BB   VPWR sky130_fd_pr__pfet_01v8 w=0.7u l=0.15u
+
+xmn0 BU BD BA VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u 
+xmna BA VPWR VGND VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u 
+
+#CAP
+xmpb VPWR BU VPWR   VPWR sky130_fd_pr__pfet_01v8 w=1.355u l=2u
+xmnc VGND BU VGND   VGND sky130_fd_pr__nfet_01v8 w=1.305u l=2u
+
+# active
+
+xmp1 VPWR  UP   VPWR VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmp2 A1    UP_N VPWR VPWR sky130_fd_pr__pfet_01v8 w=0.42u  l=0.15u
+xmp3 A1    UP   A1   VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmn4 A1    UP_N VGND VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmp5 VCTRL BU   A1   VPWR sky130_fd_pr__pfet_01v8 w=3.99u  l=0.15u
+
+#xxp3 VPWR    A1   VPWR   VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+#xxn3 VGND    A2   VGND   VGND sky130_fd_pr__nfet_01v8 w=0.42u  l=0.15u
+
+
+xmn5 VCTRL BD     A2    VGND sky130_fd_pr__nfet_01v8 w=3.21u l=0.15u
+xmp4 A2    DOWN   VPWR  VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmn3 A2    DOWN_N A2    VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmn2 A2    DOWN   VGND  VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmn1 VGND  DOWN_N VGND  VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+
+# dummy
+
+xmp11 VPWR  DOWN   VPWR VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmp12 D1    DOWN_N VPWR VPWR sky130_fd_pr__pfet_01v8 w=0.42u  l=0.15u
+xmp13 D1    DOWN   D1   VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmn14 D1    DOWN_N VGND VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmp15 VDUM  BU     D1   VPWR sky130_fd_pr__pfet_01v8 w=3.99u  l=0.15u
+
+#xxp23 VPWR    D1   VPWR   VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+#xxn23 VGND    D2   VGND   VGND sky130_fd_pr__nfet_01v8 w=0.42u  l=0.15u
+
+xmn15 VDUM  BD      D2    VGND sky130_fd_pr__nfet_01v8 w=3.21u l=0.15u
+xmp14 D2    UP      VPWR  VPWR sky130_fd_pr__pfet_01v8 w=0.7u  l=0.15u
+xmn13 D2    UP_N    D2    VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmn12 D2    UP      VGND  VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+xmn11 VGND  UP_N    VGND  VGND sky130_fd_pr__nfet_01v8 w=0.42u l=0.15u
+
+XR1  VCTRL VC2             sky130_fd_pr__res_generic_po  R=1478.13333333 L=10.12u W=0.33u
+XR2  VC    VC2             sky130_fd_pr__res_generic_po  R=13042.4818182 L=89.295u W=0.33u
+`
+
+
+
+XMC34 VGND VPWR  VGND VGND sky130_fd_pr__cap_vpp_04p4x04p6_m1m2m3_shieldl1
+XMC35 VGND VPWR  VGND VGND sky130_fd_pr__cap_vpp_04p4x04p6_m1m2m3_shieldl1
+
+XMC36a VGND VCTRL VGND VGND sky130_fd_pr__cap_vpp_04p4x04p6_m1m2m3_shieldl1
+XMC36b VGND VCTRL VGND VGND sky130_fd_pr__cap_vpp_04p4x04p6_m1m2m3_shieldl1
+
+XMC17 VGND VC    VGND VGND sky130_fd_pr__cap_vpp_11p5x11p7_l1m1m2_shieldpom3
+XMC18 VGND VC    VGND VGND sky130_fd_pr__cap_vpp_11p5x11p7_l1m1m2_shieldpom3
+XMC19 VGND VC    VGND VGND sky130_fd_pr__cap_vpp_11p5x11p7_l1m1m2_shieldpom3
+XMC20 VGND VC    VGND VGND sky130_fd_pr__cap_vpp_11p5x11p7_l1m1m2_shieldpom3
+
+
+# reset
+
+XMN77  VGND RESET VC2 VGND sky130_fd_pr__nfet_01v8 L=0.15u W=1.48u
+#XMN77  VC2 RESET VGND VGND sky130_fd_pr__nfet_01v8 L=0.15u W=0.74u
+#XMN78  VC2 RESET VGND VGND sky130_fd_pr__nfet_01v8 L=0.15u W=0.74u
+.ends
+

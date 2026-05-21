@@ -1,0 +1,33 @@
+
+.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+.include "dly_1_extracted.cir"
+
+* Instantiate the extracted subcircuit
+X1 VPWR Y1 VPWR O11 O12 VCTRL O81 VBIAS IN1 GND GND dly_1
+X2 VPWR Y2 VPWR O21 O22 VCTRL O12 VBIAS O11 GND GND dly_1
+X3 VPWR Y3 VPWR O31 O32 VCTRL O22 VBIAS O21 GND GND dly_1
+X4 VPWR Y4 VPWR O41 O42 VCTRL O32 VBIAS O31 GND GND dly_1
+X5 VPWR Y5 VPWR O51 O52 VCTRL O42 VBIAS O41 GND GND dly_1
+X6 VPWR Y6 VPWR O61 O62 VCTRL O52 VBIAS O51 GND GND dly_1
+X7 VPWR Y7 VPWR O71 O72 VCTRL O62 VBIAS O61 GND GND dly_1
+X8 VPWR Y8 VPWR O81 O82 VCTRL O72 VBIAS O71 GND GND dly_1
+
+
+X99 OUT1 O82 VPWR  VPWR sky130_fd_pr__pfet_01v8 L=0.15 W=0.66 AS=0.2112 AD=0.1089 PS=1.96 PD=0.99
+X98 OUT1 O82 GND   GND sky130_fd_pr__nfet_01v8_lvt L=0.15 W=0.74 AS=0.2183 AD=0.1887 PS=2.07 PD=1.99
+
+* Simulation sources
+V1 VPWR GND 1.8
+V4 IN1 GND PULSE(0 1.8 1ns 10ps 10ps 5ns 10ns)
+V5 IN2 GND PULSE(1.8 0 1ns 10ps 10ps 5ns 10ns)
+V2 VBIAS GND 1.75
+V3 VCTRL GND 0.8
+#V6 sky130_gnd GND 0
+
+* Simulation commands
+.tran 0.02n 200n
+.control
+run
+plot v(IN1) v(O41) v(O61) v(O42) v(OUT1) v(VCTRL) v(VBIAS) v(Y1)
+.endc
+.end

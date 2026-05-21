@@ -1,0 +1,63 @@
+#
+#.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+#.lib /usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hs/spice/sky130_fd_sc_hs.spice
+
+.SUBCKT counter XRESET CLK COUNT_2 COUNT_1 VPWR COUNT_3 COUNT_0 LOCALCLK VGND
+
+#	wire [3:0]i, o, n;
+#	wire [3:1]a;
+#	wire load, load_x;
+
+#	sky130_fd_sc_hs__nor4_1 g2(.A(count[0]), .B(count[1]), .C(count[2]), .D(count[3]), .Y(al));
+XG2 COUNT_3 COUNT_2 COUNT_1 COUNT_0 VGND VGND VPWR VPWR AL sky130_fd_sc_hs__nor4_1 
+
+
+#	sky130_fd_sc_hs__mux2_1  m4(.S(al), .A0(load), .A1(clk), .X(res));
+XM4 LOAD CLK AL VGND VGND VPWR VPWR LOCALCLK sky130_fd_sc_hs__mux2_1 
+
+
+#	sky130_fd_sc_hs__nor4_1 g0(.A(o[0]), .B(o[1]), .C(o[2]), .D(o[3]), .Y(load));
+XG0 O_3 O_2 O_0 O_1 VGND VGND VPWR VPWR LOAD sky130_fd_sc_hs__nor4_1 
+
+#	sky130_fd_sc_hs__or2_1	g1(.A(load), .B(reset), .X(load_x));
+XG1 XRESET LOAD VGND VGND VPWR VPWR LOAD_X	sky130_fd_sc_hs__or2_1	
+
+#	sky130_fd_sc_hs__mux2_1  m3(.S(load_x), .A0(n[3]), .A1(count[3]), .X(i[3]));
+XM3 N_3 COUNT_3 LOAD_X VGND VGND VPWR VPWR I_3 sky130_fd_sc_hs__mux2_1  
+#	sky130_fd_sc_hs__dfxtp_1 d3(.CLK(clk), .D(i[3]), .Q(o[3]));
+XD3 CLK I_3 VGND VGND VPWR VPWR O_3  sky130_fd_sc_hs__dfxtp_1 
+
+#	sky130_fd_sc_hs__mux2_1  m2(.S(load_x), .A0(n[2]), .A1(count[2]), .X(i[2]));
+XM2 N_2 COUNT_2 LOAD_X VGND VGND VPWR VPWR I_2 sky130_fd_sc_hs__mux2_1  
+#	sky130_fd_sc_hs__dfxtp_1 d2(.CLK(clk), .D(i[2]), .Q(o[2]));
+XD2 CLK I_2 VGND VGND VPWR VPWR O_2  sky130_fd_sc_hs__dfxtp_1 
+
+#	sky130_fd_sc_hs__mux2_1  m1(.S(load_x), .A0(n[1]), .A1(count[1]),  .X(i[1]));
+XM1 N_1 COUNT_1 LOAD_X VGND VGND VPWR VPWR I_1 sky130_fd_sc_hs__mux2_1  
+#	sky130_fd_sc_hs__dfxtp_1 d1(.CLK(clk), .D(i[1]), .Q(o[1]));
+XD1 CLK I_1 VGND VGND VPWR VPWR O_1  sky130_fd_sc_hs__dfxtp_1 
+
+#	sky130_fd_sc_hs__mux2_1  m0(.S(load_x), .A0(n[0]), .A1(count[0]), .X(i[0]));
+XM0 N_0 COUNT_0 LOAD_X VGND VGND VPWR VPWR I_0 sky130_fd_sc_hs__mux2_1  
+#	sky130_fd_sc_hs__dfxtp_1 d0(.CLK(clk), .D(i[0]), .Q(o[0]));
+XD0 CLK I_0 VGND VGND VPWR VPWR O_0  sky130_fd_sc_hs__dfxtp_1 
+
+#	sky130_fd_sc_hs__inv_1	i0(.A(o[0]), .Y(n[0]));				// n[0] = ~o[0]
+XI0 O_0 VGND VGND VPWR VPWR N_0 sky130_fd_sc_hs__inv_1	
+
+#	sky130_fd_sc_hs__xor2_1 x1(.A(o[1]), .B(n[0]), .X(n[1]));		// n[2] = ~o[0]?~o[1]:o[1]
+XX1 O_1 N_0 VGND VGND VPWR VPWR N_1 sky130_fd_sc_hs__xor2_1 
+
+#	sky130_fd_sc_hs__nor2_1	a2(.A(o[0]), .B(o[1]), .Y(a[2]));		// n[2] = ~|o[1:0]?~o[2]:o[2]
+XA2 O_0 O_1 VGND VGND VPWR VPWR A_2 sky130_fd_sc_hs__nor2_1	
+#	sky130_fd_sc_hs__xor2_1 x2(.A(a[2]), .B(o[2]), .X(n[2]));
+XX2 O_2 A_2 VGND VGND VPWR VPWR N_2 sky130_fd_sc_hs__xor2_1 
+
+#	sky130_fd_sc_hs__nor3_1 a3(.A(o[0]), .B(o[1]), .C(o[2]), .Y(a[3])); 	// n[3] = ~|[2:0]?~o[2]:o[2]
+XA3 O_0 O_1 O_2 VGND VGND VPWR VPWR A_3 sky130_fd_sc_hs__nor3_1 
+#	sky130_fd_sc_hs__xor2_1 x3(.A(a[3]), .B(o[3]), .X(n[3]));
+XX3 O_3 A_3 VGND VGND VPWR VPWR N_3 sky130_fd_sc_hs__xor2_1 
+		
+
+.ENDS counter
+

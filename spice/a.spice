@@ -1,0 +1,37 @@
+
+.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+.include /home/paul/.volare/sky130A/libs.tech/ngspice/capacitors/sky130_fd_pr__model__cap_vpp.model.spice
+.include "pll_extracted.cir"
+#.include "dll.spice"
+
+* Instantiate the extracted subcircuit
+XPLL VPWR VCTRL DOWN DOWN_N LOCALCLK UP UP_N BD BU REFCLK CLK COUNT_0
++ COUNT_3 COUNT_2 COUNT_1 RESET_OUT_N RESET_N VGND pll
+
+
+# 300-MHZ iffy
+# 200-MHZ OK
+# 100-MHZ OK
+# 50-MHZ iffy ~100MHz
+
+* Simulation sources
+V0 VGND GND 0
+V1 VPWR GND 1.8
+V2 COUNT_3 GND 1.9
+V3 COUNT_2 GND 0
+V4 COUNT_1 GND 0
+V5 COUNT_0 GND 1.8
+V6 REFCLK GND PULSE(0 1.8 1n 100p 100p 20n 40n)
+V7 RESET_N  GND PULSE(1.8 0 1n 100p 100p 40n 80n 1)
+#V8 BD  GND 0.51
+
+* Simulation commands
+#.tran 0.02n 5000n 
+.tran 0.1n 400000n 
+.control
+save REFCLK LOCALCLK VCTRL UP_N DOWN CLK BD BU RESET_OUT_N  
+run
+#plot v(UP) v(VCTRL) 
+eprvcd -a REFCLK LOCALCLK VCTRL UP_N DOWN CLK BU BD RESET_OUT_N >a.vcd
+.endc
+.end

@@ -1,0 +1,26 @@
+
+.lib /home/paul/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+.include "counter_extracted.cir"
+
+* Instantiate the extracted subcircuit
+XA RESET CLK COUNT_2 COUNT_1 VPWR COUNT_3 COUNT_0 LOCALCLK VGND counter
+
+
+
+* Simulation sources
+V0 VGND GND 0
+V1 VPWR GND 1.8
+V2 CLK GND PULSE(0 1.8 1ns 100ps 100ps 10ns 20ns)
+V3 COUNT_0 GND 0
+V4 COUNT_1 GND 1.8
+V5 COUNT_2 GND 1.8
+V6 COUNT_3 GND 1.8
+V7 RESET GND 0
+
+* Simulation commands
+.tran 0.02n 600n
+.control
+run
+plot v(LOCALCLK)
+.endc
+.end
